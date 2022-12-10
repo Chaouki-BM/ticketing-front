@@ -6,37 +6,42 @@ import AddUserModal from '../components/AddUserModal';
 import {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAllUsersApi} from '../redux/actions/user.actions';
-import {SET_SELECTED_USER} from '../redux/types';
+import {SET_SELECTED_EQUIPMENT, SET_SELECTED_USER} from '../redux/types';
 import EditUserModal from '../components/EditUserModal';
+import AddEquipmentModal from '../components/AddEquipementModal';
+import EquipItem from '../components/EquipItem';
+import {getAllEquipApi} from '../redux/actions/equip.action';
+import EditEquipmentModal from '../components/EditEquipmentModal';
 
-const UsersScreen = () => {
+const DeviceScreens = () => {
   const [isAddVisivible, setIsAddVisible] = useState(false);
   const [isEditUserVisible, setIsEditUserVisible] = useState(false);
   const dispatch = useDispatch();
   const {token} = useSelector(state => state.auth);
-  const {userList} = useSelector(state => state.users);
+  const {equipList} = useSelector(state => state.equipment);
   const handleAddUser = () => {
     setIsAddVisible(true);
   };
-  const handleCloseAddUser = () => {
+  const handleCloseAdd = () => {
     setIsAddVisible(false);
   };
   const handleCloseEditUser = () => {
     setIsEditUserVisible(false);
   };
   useEffect(() => {
-    dispatch(getAllUsersApi(token));
+    dispatch(getAllEquipApi(token));
   }, []);
   return (
     <View style={styles.container}>
-      <AddUserModal
+      <AddEquipmentModal
         isVisible={isAddVisivible}
-        handleClose={handleCloseAddUser}
+        handleClose={handleCloseAdd}
       />
-      <EditUserModal
+      <EditEquipmentModal
         isVisible={isEditUserVisible}
         handleClose={handleCloseEditUser}
       />
+
       <Button
         accessoryLeft={
           <Icon
@@ -46,27 +51,28 @@ const UsersScreen = () => {
           />
         }
         onPress={handleAddUser}>
-        Nouveau Utilisateur{' '}
+        Nouveau Equipement
       </Button>
       <FlatList
-        data={userList}
-        renderItem={({item}) => (
-          <UserItem
-            key={item._id}
-            name={`${item.firstName} ${item.name}`}
-            role={item.role == 0 ? 'ADMIN' : 'USER'}
-            iconName={'people-outline'}
-            handleDelete={() => {}}
-            handleEdit={() => {
-              console.log('Clicked edit');
-              setIsEditUserVisible(true);
-              dispatch({
-                type: SET_SELECTED_USER,
-                payload: item,
-              });
-            }}
-          />
-        )}
+        data={equipList}
+        renderItem={({item}) => {
+          return (
+            <EquipItem
+              key={item._id}
+              ipAdr={item.equipIP}
+              service={item.service}
+              iconName={'hard-drive-outline'}
+              handleDelete={() => {}}
+              handleEdit={() => {
+                setIsEditUserVisible(true);
+                dispatch({
+                  type: SET_SELECTED_EQUIPMENT,
+                  payload: item,
+                });
+              }}
+            />
+          );
+        }}
       />
 
       {/* <UserItem
@@ -94,7 +100,7 @@ const UsersScreen = () => {
   );
 };
 
-export default UsersScreen;
+export default DeviceScreens;
 
 const styles = StyleSheet.create({
   container: {

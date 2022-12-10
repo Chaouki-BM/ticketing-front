@@ -1,12 +1,13 @@
 import {StyleSheet, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Button, Card, Input, Modal, Toggle, Text} from '@ui-kitten/components';
 import {useDispatch, useSelector} from 'react-redux';
 import {addUserApi} from '../redux/actions/user.actions';
-const AddUserModal = ({isVisible, handleClose}) => {
+const EditUserModal = ({isVisible, handleClose}) => {
   const dispatch = useDispatch();
   const [isAdmin, setIsAdmin] = useState(false);
   const {token} = useSelector(state => state.auth);
+  const {selectedUser} = useSelector(state => state.users);
   const [userInfo, setUserInfo] = useState({
     name: '',
     firstName: '',
@@ -20,6 +21,17 @@ const AddUserModal = ({isVisible, handleClose}) => {
     dispatch(addUserApi(data, token));
     handleClose();
   };
+  useEffect(() => {
+    if (selectedUser) {
+      setUserInfo({
+        ...userInfo,
+        firstName: selectedUser.firstName,
+        name: selectedUser.name,
+        email: selectedUser.email,
+      });
+      selectedUser.role == 0 ? setIsAdmin(true) : setIsAdmin(false);
+    }
+  }, [selectedUser]);
   return (
     <Modal
       visible={isVisible}
@@ -71,7 +83,7 @@ const AddUserModal = ({isVisible, handleClose}) => {
   );
 };
 
-export default AddUserModal;
+export default EditUserModal;
 
 const styles = StyleSheet.create({
   container: {
