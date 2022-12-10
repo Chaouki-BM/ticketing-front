@@ -1,7 +1,14 @@
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {Icon, Button} from '@ui-kitten/components';
-const UserItem = ({iconName, handleEdit, handleDelete, name, role, item}) => {
+const EquipItem = ({
+  iconName,
+  handleEdit,
+  handleDelete,
+  ipAdr,
+  service,
+  item,
+}) => {
   const EditIcon = props => {
     return (
       <Icon
@@ -28,14 +35,15 @@ const UserItem = ({iconName, handleEdit, handleDelete, name, role, item}) => {
         <Icon fill="#FFF" name={iconName} style={{width: 30, height: 30}} />
       </View>
       <View style={styles.nameContainer}>
-        <Text style={styles.btnText}>{name}</Text>
-        <Text style={styles.btnSubText}>{role}</Text>
+        <Text style={styles.btnText}>{ipAdr}</Text>
+        <Text style={styles.btnSubText}>{service}</Text>
       </View>
       <View style={styles.btnContainer}>
         <Button
           style={styles.button}
           status="danger"
           accessoryLeft={DeleteIcon}
+          onPress={handleDelete}
         />
         <Button
           style={styles.button}
@@ -48,7 +56,7 @@ const UserItem = ({iconName, handleEdit, handleDelete, name, role, item}) => {
   );
 };
 
-export default UserItem;
+export default EquipItem;
 
 const styles = StyleSheet.create({
   menuItem: {
